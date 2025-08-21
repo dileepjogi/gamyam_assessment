@@ -3,29 +3,24 @@ import ProductCard from "../components/ProductCard";
 import ProductTable from "../components/ProductTable";
 import ProductForm from "../components/ProductForm";
 import Pagination from "../components/Pagination";
+import useDebounce from "../hooks/useDebounce";
 import data from "../data/products.json";
 
 export default function ProductPage() {
   const [products, setProducts] = useState([]);
   const [view, setView] = useState("table"); // table | card
   const [search, setSearch] = useState("");
-  const [debouncedSearch, setDebouncedSearch] = useState("");
   const [editingProduct, setEditingProduct] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 4;
-
+  // Debounce search
+  const debouncedSearch = useDebounce(search);
   // Load products
   useEffect(() => {
     setProducts(data);
   }, []);
 
-  // Debounce search
-  useEffect(() => {
-    const handler = setTimeout(() => {
-      setDebouncedSearch(search);
-    }, 500);
-    return () => clearTimeout(handler);
-  }, [search]);
+
 
   const filteredProducts = products.filter((p) =>
     p.name.toLowerCase().includes(debouncedSearch.toLowerCase())
